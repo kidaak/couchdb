@@ -69,7 +69,10 @@ couchTests.reduce = function(debug) {
       docs.push({keys:["d", "b"]});
       docs.push({keys:["d", "c"]});
       db.bulkSave(docs);
-      var total_docs = ((i - 1) * 10 * 11) + ((j + 1) * 11);
+      // the queries below all create an extra document, adding up to 6 in total
+      var total_docs = ((i - 1) * 10 * 11) + ((j + 1) * 11) + ((i - 1) * 6);
+      // let's buy ourselves some time for the changes to propagate through the cluster
+      for (var k=0; k<10; k++) db.info();
       TEquals(total_docs, db.info().doc_count, "doc count should match");
     }
 
